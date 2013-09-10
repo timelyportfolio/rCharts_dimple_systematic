@@ -18,8 +18,9 @@ load.packages('quantmod')
 tickers = spl('GLD,UUP,SPY,QQQ,IWM,EEM,EFA,IYR,USO,TLT')
 
 data <- new.env()
-getSymbols(tickers, src = 'yahoo', from = '1900-01-01', env = data, auto.assign = T)
-for(i in ls(data)) data[[i]] = adjustOHLC(data[[i]], use.Adjusted=T)
+load("data.Rdata",envir=data)
+#getSymbols(tickers, src = 'yahoo', from = '1900-01-01', env = data, auto.assign = T)
+#for(i in ls(data)) data[[i]] = adjustOHLC(data[[i]], use.Adjusted=T)
 
 bt.prep(data, align='remove.na')
 
@@ -134,7 +135,7 @@ dStory
 
 
 
-
+require(ggplot2)
 ggplot(
   data = strategy.melt,
   aes(x=strategy, y = median, fill=symbol, stat="identity")) +
