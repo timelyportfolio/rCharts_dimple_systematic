@@ -105,9 +105,11 @@ dFacet <- dPlot(
   width = 800
 )
 dFacet$xAxis( orderRule = "symbol" )
+dFacet$yAxis( overrideMax = 0.4, outputFormat = ".2f" )
 dFacet$facet( x = "strategy", y = "date" )
 dFacet$templates$script = system.file(
-  "libraries/dimple/layouts/chartFacet.html",
+  "libraries/dimple/layouts/chartFacet_d3grid.html",
+  #"libraries/dimple/layouts/chartFacet.html",
   package = "rCharts"
 )
 dFacet
@@ -129,8 +131,8 @@ dStory$legend(
   height = 20,
   horizontalAlign = "right"
 )
+dStory$yAxis( type = "addPctAxis" )
 dStory$set( storyboard = "strategy" )
-dStory$yAxis ( overrideMax = 1 )
 dStory
 
 
