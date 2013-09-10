@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>rCharts + nvd3 | Systematic Investor Methods</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/png" href="favicon.ico">
+  <style>
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+  </style>
+  
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-responsive.no-icons.min.css" rel="stylesheet">
+<!-- <link rel="stylesheet" href="/css/bootstrap.min.css"> -->
+<link  rel="stylesheet" 
+    href="http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css">
+  <link rel="stylesheet" href="libraries/frameworks/bootstrap/css/bootstrap-responsive.min.css">
+  
+  <link rel="stylesheet" href="libraries/frameworks/bootstrap/css/main.css">
+  <link rel="stylesheet" href="libraries/highlighters/prettify/css/twitter-bootstrap.css" />
+  <script src="libraries/frameworks/bootstrap/js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/frameworks/bootstrap/js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+    <link rel=stylesheet href="http://fonts.googleapis.com/css?family=Raleway:300"></link>
+<link rel=stylesheet href="http://fonts.googleapis.com/css?family=Oxygen"></link>
+
+  
+</head>
+<body>
+   <!--[if lt IE 7]>
+     <p class="chromeframe">You are using an outdated browser. 
+       <a href="http://browsehappy.com/">Upgrade your browser today</a> or 
+       <a href="http://www.google.com/chromeframe/?redirect=true"> 
+         install Google Chrome Frame
+       </a> to better experience this site.
+    </p>
+   <![endif]-->
+   <!-- Ref: http://twitter.github.com/bootstrap/examples/hero.html -->
+   
+    <div class="container">
+      
+<style>
+iframe{
+  height:600px;
+  width:900px;
+  margin:auto auto;
+}
+
+body{
+  font-family: 'Oxygen', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+h1,h2,h3,h4 {
+font-family: 'Raleway', sans-serif;
+}
+
+.container { width: 900px; }
+
+h3 {
+background-color: #D4DAEC;
+  text-indent: 100px; 
+}
+
+h4 {
+text-indent: 100px;
+}
+</style>
+  
+
+<p><a href="https://github.com/timelyportfolio/rCharts_nvd3_perf"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a></p>
+
+<h1>Interactive Analysis of Systematic Investor</h1>
+
+<p>The <a href="http://systematicinvestor.wordpress.com">Systematic Investor blog</a> is an incredible resource for the R finance community.  I know it is possible to replicate some of his work in Javascript, but I find it very unlikely that anyone will do it any time soon.  Fortunately though this does not mean R users can&#39;t explore his work using Javascript interactive charting.  With <a href="http://rcharts.io/site">rCharts</a>, we R users can use R to do the math and Javascript to do the plots.  I thought it would be good fun to take one of the <a href="http://systematicinvestor.wordpress.com/2013/03/05/cluster-risk-parity-back-test/">posts from Systematic Investor</a> and d3-ify it.</p>
+
+<h3>Copy/Paste Systematic Investor Brilliance</h3>
+
+<p>Let&#39;s start by getting the data and performing the calculations in R.  This is a direct copy and paste from the Systematic Investor post.  Thanks again Systematic Investor.</p>
+
+<pre><code class="r">#thanks Systematic Investor http://systematicinvestor.wordpress.com
+#for this post http://systematicinvestor.wordpress.com/2013/03/05/cluster-risk-parity-back-test/
+
+###############################################################################
+# Load Systematic Investor Toolbox (SIT)
+# http://systematicinvestor.wordpress.com/systematic-investor-toolbox/
+###############################################################################
+setInternet2(TRUE)
+con = gzcon(url(&#39;http://www.systematicportfolio.com/sit.gz&#39;, &#39;rb&#39;))
+source(con)
+close(con)
+
+#*****************************************************************
+# Load historical data for ETFs
+#****************************************************************** 
+load.packages(&#39;quantmod&#39;)
+
+tickers = spl(&#39;GLD,UUP,SPY,QQQ,IWM,EEM,EFA,IYR,USO,TLT&#39;)
+
+data &lt;- new.env()
+getSymbols(tickers, src = &#39;yahoo&#39;, from = &#39;1900-01-01&#39;, env = data, auto.assign = T)
+for(i in ls(data)) data[[i]] = adjustOHLC(data[[i]], use.Adjusted=T)
+
+bt.prep(data, align=&#39;remove.na&#39;)
+
+#*****************************************************************
+# Code Strategies
+#******************************************************************     
+periodicity = &#39;months&#39;
+lookback.len = 250
+cluster.group = cluster.group.kmeans.90
+
+obj = portfolio.allocation.helper(
+  data$prices, 
+  periodicity = periodicity, lookback.len = lookback.len,
+  min.risk.fns = list(
+    EW=equal.weight.portfolio,
+    RP=risk.parity.portfolio,
+    C.EW = distribute.weights(equal.weight.portfolio, cluster.group),
+    C.RP=distribute.weights(risk.parity.portfolio, cluster.group)
+  )
+)       
+
+models = create.strategies(obj, data)$models
+
+#*****************************************************************
+# Create Report
+#******************************************************************     
+#strategy.performance.snapshoot(models, T)
+</code></pre>
+
+<h3>Plot with <a href="http://rcharts.io/site">rCharts</a> and <a href="http://nvd3.org">nvd3</a></h3>
+
+<p>With this really useful set of data, let&#39;s explore the weights assigned each asset by the Cluster Equal Weight (C.EW) method.  I will start by using a direct dump of the weight data, but as you might notice, doing the chart with daily data slows things down a bit.</p>
+
+<pre><code class="r">#use rCharts to get some interactive plots
+require(rCharts)
+require(reshape2)
+
+weights.df &lt;- data.frame(index(models$C.EW$weight),models$C.EW$weight)[which(models$C.EW$weight[,1]!=0),]
+colnames(weights.df)[1] &lt;- &quot;date&quot;
+
+weights.melt &lt;- melt(weights.df, id.vars = 1)
+colnames(weights.melt) = c(&quot;date&quot;,&quot;symbol&quot;,&quot;value&quot;)
+
+nWeights &lt;- nPlot(
+  value ~ date,
+  group = &quot;symbol&quot;,
+  data = weights.melt,  
+  type = &quot;stackedAreaChart&quot;
+)
+nWeights$chart(clipEdge = TRUE)
+nWeights$xAxis(tickFormat =
+  &quot;#!function(d) {return d3.time.format(&#39;%b %Y&#39;)(new Date( d * 1000 ));}!#&quot;
+)
+nWeights$setLib(lib=&quot;libraries/widgets/nvd3&quot;)
+nWeights
+</code></pre>
+
+<iframe src=assets/fig/unnamed-chunk-3.html seamless></iframe>
+
+<h3>Aggregate Data for Better Performance</h3>
+
+<p>With <code>plyr</code> we can do summarize our data by year.  I will use <code>mean</code> in the next 3 charts.</p>
+
+<pre><code class="r">#I don&#39;t think daily is necessary, so let&#39;s try some aggregation
+require(plyr)
+#use plyr to get average weight by some group of dates; I chose %Y for year
+weights.avg &lt;- ddply(weights.melt, .(format(date,&quot;%Y&quot;),symbol), summarise, mean = mean(value))
+colnames(weights.avg) [1] &lt;- &quot;date&quot;
+
+nAvgBar &lt;- nPlot(
+  mean ~ date, 
+  group = &quot;symbol&quot;,
+  data = weights.avg,
+  type= &quot;multiBarChart&quot;
+)
+nAvgBar$setLib(lib=&quot;libraries/widgets/nvd3&quot;)
+nAvgBar
+</code></pre>
+
+<iframe src=assets/fig/unnamed-chunk-4.html seamless></iframe>
+
+<p>Here is the same data as a stacked area plot instead of bar plot.</p>
+
+<pre><code class="r">nAvgArea &lt;- nPlot(
+  mean ~ date, 
+  group = &quot;symbol&quot;,
+  data = weights.avg,
+  type= &quot;stackedAreaChart&quot;
+)
+nAvgArea$chart( useInteractiveGuideline = TRUE )
+nAvgArea$yAxis(tickFormat = 
+  &quot;#!function(d) { return d3.format(&#39;.2%&#39;)(d) }!#&quot;
+)
+nAvgArea$setLib(lib=&quot;libraries/widgets/nvd3&quot;)
+nAvgArea
+</code></pre>
+
+<iframe src=assets/fig/unnamed-chunk-5.html seamless></iframe>
+
+<h3>Facet Like a Very Crude <code>ggplot2</code></h3>
+
+<p>In this <a href="https://github.com/timelyportfolio/rCharts/tree/test-speedimprove">test branch</a> of <code>rCharts</code>, I have started experimenting with facets for <code>dimplejs</code> and <code>nvd3</code>.  Here are some ugly pie charts facetted by <code>year</code>.  Of course, if we had facet wrap like <code>ggplot2</code> these would be much better.</p>
+
+<pre><code class="r">nAvg &lt;- nPlot(
+ mean ~ symbol,
+ #group = &quot;symbol&quot;,
+ data = weights.avg,
+ type = &quot;pieChart&quot;,
+ height = 1500
+)
+nAvg$setLib(lib=&quot;libraries/widgets/nvd3&quot;)
+nAvg$chart( donut = TRUE, showLegend = FALSE)
+nAvg$params$facet=&quot;date&quot;
+nAvg$templates$script = system.file(
+  &quot;/libraries/nvd3/layouts/nvd3FacetPlot.html&quot;,
+  package = &quot;rCharts&quot;
+)
+nAvg
+</code></pre>
+
+<iframe src=assets/fig/unnamed-chunk-6.html seamless></iframe>
+
+<h3>More Comprehensive View</h3>
+
+<p>In the charts above, we limited our analysis to just one asset allocation method.  Let&#39;s expand our analysis to all the asset allocation methods that were calculated and demonstrate another chart facetted by <code>year</code>.</p>
+
+<pre><code class="r">#explore with strategy
+#do median weight by year
+strategy.melt &lt;- do.call(rbind, lapply(names(models),function(x){
+  x.melt &lt;- melt(
+    data.frame(
+      index(models[[x]]$weight[-(1:254),]),    ###do 254 to eliminate 0s at beginning
+      rep(x,NROW(models[[x]]$weight[-(1:254),])),
+      models[[x]]$weight[-(1:254),]
+    ),
+    id.vars = 1:2
+  )
+  colnames(x.melt) &lt;- c(&quot;date&quot;,&quot;strategy&quot;,&quot;symbol&quot;,&quot;weight&quot;)
+  #get median by year
+  x.melt &lt;- ddply(x.melt, .(strategy,format(date,&quot;%Y&quot;),symbol), summarise, median = median(weight))
+  colnames(x.melt)[2] &lt;- &quot;date&quot;  
+  return(x.melt)
+}))
+
+nStrat &lt;- nPlot(
+  median ~ strategy,
+  group = &quot;symbol&quot;,
+  data = strategy.melt,
+  type = &quot;multiBarChart&quot;,
+  height = 1500
+)
+nStrat$params$facet=&quot;date&quot;
+nStrat$setLib(lib=&quot;libraries/widgets/nvd3&quot;)
+nStrat$templates$script = system.file(
+  &quot;/libraries/nvd3/layouts/nvd3FacetPlot.html&quot;,
+  package = &quot;rCharts&quot;
+)
+nStrat
+</code></pre>
+
+<iframe src=assets/fig/unnamed-chunk-7.html seamless></iframe>
+
+<p>Another way to facet would be by strategy.</p>
+
+<pre><code class="r">nStrat2 &lt;- nPlot(
+  median ~ date,
+  group = &quot;symbol&quot;,
+  data = strategy.melt,
+  type = &quot;multiBarChart&quot;,
+  height = 1500
+)
+nStrat2$params$facet=&quot;strategy&quot;
+nStrat2$setLib(lib=&quot;libraries/widgets/nvd3&quot;)
+nStrat2$templates$script = system.file(
+  &quot;/libraries/nvd3/layouts/nvd3FacetPlot.html&quot;,
+  package = &quot;rCharts&quot;
+)
+nStrat2
+</code></pre>
+
+<iframe src=assets/fig/unnamed-chunk-8.html seamless></iframe>
+
+<h3>Thanks</h3>
+
+<p>Thanks again:</p>
+
+<ul>
+<li><a href="http://systematicinvestor.wordpress.com">Systematic Investor</a> for all the code</li>
+<li><a href="http://github.com/ramnathv">Ramnath Vaidyanathan</a> for <a href="http://rcharts.io/site">rCharts</a> and <a href="http://slidify.org">slidify</a></li>
+<li>the team behind <a href="http://nvd3.org">nvd3</a></li>
+<li>and <a href="http://bost.ocks.org/mike/">Mike Bostock</a></li>
+</ul>
+
+    </div>
+        
+</body>
+  <script src="libraries/frameworks/bootstrap/js/vendor/bootstrap.min.js"></script>
+  <script src="libraries/frameworks/bootstrap/js/plugins.js"></script>
+  <script src="libraries/frameworks/bootstrap/js/main.js"></script>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>

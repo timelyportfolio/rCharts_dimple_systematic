@@ -1,0 +1,120 @@
+<!doctype HTML>
+<meta charset = 'utf-8'>
+<html>
+  <head>
+    <link rel='stylesheet' href='../../libraries/widgets/nvd3/css/nv.d3.css'>
+    <link rel='stylesheet' href='../../libraries/widgets/nvd3/css/rNVD3.css'>
+    
+    <script src='../../libraries/widgets/nvd3/js/jquery-1.8.2.min.js' type='text/javascript'></script>
+    <script src='../../libraries/widgets/nvd3/js/d3.v3.min.js' type='text/javascript'></script>
+    <script src='../../libraries/widgets/nvd3/js/nv.d3.min-new.js' type='text/javascript'></script>
+    <script src='../../libraries/widgets/nvd3/js/fisheye.js' type='text/javascript'></script>
+    
+    <style>
+    .rChart {
+      display: block;
+      margin-left: auto; 
+      margin-right: auto;
+      width: 800px;
+      height: 1500px;
+    }  
+    </style>
+    
+  </head>
+  <body>
+    <div id='chart1570260c4d15' class='rChart nvd3'></div>  
+    
+    <script type='text/javascript'>
+    drawchart1570260c4d15()
+/*    setupChart = function(data, selector){
+      d3.select(selector)
+        .selectAll("div")
+        .data(data).enter()
+        .append('div').attr('class', 'preview')
+        .append('svg');
+    }
+*/
+    
+    
+    function drawchart1570260c4d15(){  
+      var opts = {
+ "dom": "chart1570260c4d15",
+"width":    800,
+"height":   1500,
+"x": "date",
+"y": "median",
+"group": "symbol",
+"type": "multiBarChart",
+"facet": "strategy",
+"id": "chart1570260c4d15" 
+},
+        data = [{"strategy":"EW","date":"2008","symbol":"EEM","median":0.0972769179025313},{"strategy":"EW","date":"2008","symbol":"EFA","median":0.0991183375648106},{"strategy":"EW","date":"2008","symbol":"GLD","median":0.100891770571318},{"strategy":"EW","date":"2008","symbol":"IWM","median":0.0998013229053981},{"strategy":"EW","date":"2008","symbol":"IYR","median":0.1},{"strategy":"EW","date":"2008","symbol":"QQQ","median":0.1},{"strategy":"EW","date":"2008","symbol":"SPY","median":0.0995358726679266},{"strategy":"EW","date":"2008","symbol":"TLT","median":0.10208415184966},{"strategy":"EW","date":"2008","symbol":"USO","median":0.0977746113260552},{"strategy":"EW","date":"2008","symbol":"UUP","median":0.10135742857701},{"strategy":"EW","date":"2009","symbol":"EEM","median":0.102259352925037},{"strategy":"EW","date":"2009","symbol":"EFA","median":0.100376599683708},{"strategy":"EW","date":"2009","symbol":"GLD","median":0.0999265467409469},{"strategy":"EW","date":"2009","symbol":"IWM","median":0.100484420070296},{"strategy":"EW","date":"2009","symbol":"IYR","median":0.1},{"strategy":"EW","date":"2009","symbol":"QQQ","median":0.101593684442157},{"strategy":"EW","date":"2009","symbol":"SPY","median":0.100427622396112},{"strategy":"EW","date":"2009","symbol":"TLT","median":0.096499797013129},{"strategy":"EW","date":"2009","symbol":"USO","median":0.099324584393505},{"strategy":"EW","date":"2009","symbol":"UUP","median":0.0984020815904001},{"strategy":"EW","date":"2010","symbol":"EEM","median":0.100995154744413},{"strategy":"EW","date":"2010","symbol":"EFA","median":0.101032779408737},{"strategy":"EW","date":"2010","symbol":"GLD","median":0.1},{"strategy":"EW","date":"2010","symbol":"IWM","median":0.101248718491265},{"strategy":"EW","date":"2010","symbol":"IYR","median":0.10016406969757},{"strategy":"EW","date":"2010","symbol":"QQQ","median":0.100528188223909},{"strategy":"EW","date":"2010","symbol":"SPY","median":0.10036815975573},{"strategy":"EW","date":"2010","symbol":"TLT","median":0.0975077040626023},{"strategy":"EW","date":"2010","symbol":"USO","median":0.0998774757333163},{"strategy":"EW","date":"2010","symbol":"UUP","median":0.0975965025315092},{"strategy":"EW","date":"2011","symbol":"EEM","median":0.0990300730472657},{"strategy":"EW","date":"2011","symbol":"EFA","median":0.0989901376126824},{"strategy":"EW","date":"2011","symbol":"GLD","median":0.101038579801147},{"strategy":"EW","date":"2011","symbol":"IWM","median":0.0993949672940637},{"strategy":"EW","date":"2011","symbol":"IYR","median":0.0994330335442154},{"strategy":"EW","date":"2011","symbol":"QQQ","median":0.1},{"strategy":"EW","date":"2011","symbol":"SPY","median":0.0999242784278795},{"strategy":"EW","date":"2011","symbol":"TLT","median":0.101247196221897},{"strategy":"EW","date":"2011","symbol":"USO","median":0.0999799415095781},{"strategy":"EW","date":"2011","symbol":"UUP","median":0.100830421740086},{"strategy":"EW","date":"2012","symbol":"EEM","median":0.100474671782107},{"strategy":"EW","date":"2012","symbol":"EFA","median":0.100543749484654},{"strategy":"EW","date":"2012","symbol":"GLD","median":0.0996951083027431},{"strategy":"EW","date":"2012","symbol":"IWM","median":0.100182622502106},{"strategy":"EW","date":"2012","symbol":"IYR","median":0.100236633629506},{"strategy":"EW","date":"2012","symbol":"QQQ","median":0.100026518274229},{"strategy":"EW","date":"2012","symbol":"SPY","median":0.100237662185474},{"strategy":"EW","date":"2012","symbol":"TLT","median":0.0990022528005612},{"strategy":"EW","date":"2012","symbol":"USO","median":0.0996871353554679},{"strategy":"EW","date":"2012","symbol":"UUP","median":0.0997273371422422},{"strategy":"EW","date":"2013","symbol":"EEM","median":0.0989479012149578},{"strategy":"EW","date":"2013","symbol":"EFA","median":0.100428364968884},{"strategy":"EW","date":"2013","symbol":"GLD","median":0.0989753914793677},{"strategy":"EW","date":"2013","symbol":"IWM","median":0.101207922326247},{"strategy":"EW","date":"2013","symbol":"IYR","median":0.1},{"strategy":"EW","date":"2013","symbol":"QQQ","median":0.100924740517035},{"strategy":"EW","date":"2013","symbol":"SPY","median":0.100997102741886},{"strategy":"EW","date":"2013","symbol":"TLT","median":0.0981585503418092},{"strategy":"EW","date":"2013","symbol":"USO","median":0.100762406024148},{"strategy":"EW","date":"2013","symbol":"UUP","median":0.0998524175155031},{"strategy":"RP","date":"2008","symbol":"EEM","median":0.0527365848025824},{"strategy":"RP","date":"2008","symbol":"EFA","median":0.0893651483462844},{"strategy":"RP","date":"2008","symbol":"GLD","median":0.0960876987981793},{"strategy":"RP","date":"2008","symbol":"IWM","median":0.079019850600777},{"strategy":"RP","date":"2008","symbol":"IYR","median":0.0590413094629233},{"strategy":"RP","date":"2008","symbol":"QQQ","median":0.0842165847303225},{"strategy":"RP","date":"2008","symbol":"SPY","median":0.100786194661878},{"strategy":"RP","date":"2008","symbol":"TLT","median":0.161680639123452},{"strategy":"RP","date":"2008","symbol":"USO","median":0.0618485044192695},{"strategy":"RP","date":"2008","symbol":"UUP","median":0.219615831503953},{"strategy":"RP","date":"2009","symbol":"EEM","median":0.0508562336972784},{"strategy":"RP","date":"2009","symbol":"EFA","median":0.0708732074888974},{"strategy":"RP","date":"2009","symbol":"GLD","median":0.11194828960974},{"strategy":"RP","date":"2009","symbol":"IWM","median":0.0719258601103335},{"strategy":"RP","date":"2009","symbol":"IYR","median":0.042290782198616},{"strategy":"RP","date":"2009","symbol":"QQQ","median":0.0876387575564402},{"strategy":"RP","date":"2009","symbol":"SPY","median":0.0813083395747019},{"strategy":"RP","date":"2009","symbol":"TLT","median":0.172302512890304},{"strategy":"RP","date":"2009","symbol":"USO","median":0.0591885666788612},{"strategy":"RP","date":"2009","symbol":"UUP","median":0.248330621225122},{"strategy":"RP","date":"2010","symbol":"EEM","median":0.0692464997402181},{"strategy":"RP","date":"2010","symbol":"EFA","median":0.0808410333351686},{"strategy":"RP","date":"2010","symbol":"GLD","median":0.111517065187452},{"strategy":"RP","date":"2010","symbol":"IWM","median":0.0776343604803061},{"strategy":"RP","date":"2010","symbol":"IYR","median":0.0597187132874143},{"strategy":"RP","date":"2010","symbol":"QQQ","median":0.101845224343036},{"strategy":"RP","date":"2010","symbol":"SPY","median":0.105740073504394},{"strategy":"RP","date":"2010","symbol":"TLT","median":0.128392425820815},{"strategy":"RP","date":"2010","symbol":"USO","median":0.0591926304385898},{"strategy":"RP","date":"2010","symbol":"UUP","median":0.20374879593184},{"strategy":"RP","date":"2011","symbol":"EEM","median":0.07411179548184},{"strategy":"RP","date":"2011","symbol":"EFA","median":0.0770383462788539},{"strategy":"RP","date":"2011","symbol":"GLD","median":0.114081057669307},{"strategy":"RP","date":"2011","symbol":"IWM","median":0.0743523193623462},{"strategy":"RP","date":"2011","symbol":"IYR","median":0.0780375615873737},{"strategy":"RP","date":"2011","symbol":"QQQ","median":0.097029365033056},{"strategy":"RP","date":"2011","symbol":"SPY","median":0.105576771975805},{"strategy":"RP","date":"2011","symbol":"TLT","median":0.112154417120845},{"strategy":"RP","date":"2011","symbol":"USO","median":0.0637816824800711},{"strategy":"RP","date":"2011","symbol":"UUP","median":0.201514740940042},{"strategy":"RP","date":"2012","symbol":"EEM","median":0.067151040273901},{"strategy":"RP","date":"2012","symbol":"EFA","median":0.0740794727812342},{"strategy":"RP","date":"2012","symbol":"GLD","median":0.100129369330301},{"strategy":"RP","date":"2012","symbol":"IWM","median":0.070015533445145},{"strategy":"RP","date":"2012","symbol":"IYR","median":0.0795668784555173},{"strategy":"RP","date":"2012","symbol":"QQQ","median":0.0942000522340306},{"strategy":"RP","date":"2012","symbol":"SPY","median":0.0967509163185592},{"strategy":"RP","date":"2012","symbol":"TLT","median":0.104438014949586},{"strategy":"RP","date":"2012","symbol":"USO","median":0.0682610416114796},{"strategy":"RP","date":"2012","symbol":"UUP","median":0.238740492732132},{"strategy":"RP","date":"2013","symbol":"EEM","median":0.0748447398856332},{"strategy":"RP","date":"2013","symbol":"EFA","median":0.0819893465925862},{"strategy":"RP","date":"2013","symbol":"GLD","median":0.0795376133541151},{"strategy":"RP","date":"2013","symbol":"IWM","median":0.086040967952129},{"strategy":"RP","date":"2013","symbol":"IYR","median":0.111142035546602},{"strategy":"RP","date":"2013","symbol":"QQQ","median":0.0902076732107314},{"strategy":"RP","date":"2013","symbol":"SPY","median":0.107664217588496},{"strategy":"RP","date":"2013","symbol":"TLT","median":0.0966378029205724},{"strategy":"RP","date":"2013","symbol":"USO","median":0.0552934043110816},{"strategy":"RP","date":"2013","symbol":"UUP","median":0.209631629037915},{"strategy":"C.EW","date":"2008","symbol":"EEM","median":0.0401331130006295},{"strategy":"C.EW","date":"2008","symbol":"EFA","median":0.0410825590205047},{"strategy":"C.EW","date":"2008","symbol":"GLD","median":0.125},{"strategy":"C.EW","date":"2008","symbol":"IWM","median":0.0413634893718761},{"strategy":"C.EW","date":"2008","symbol":"IYR","median":0.041659803781599},{"strategy":"C.EW","date":"2008","symbol":"QQQ","median":0.0416666666666667},{"strategy":"C.EW","date":"2008","symbol":"SPY","median":0.0411901363091925},{"strategy":"C.EW","date":"2008","symbol":"TLT","median":0.253203861218916},{"strategy":"C.EW","date":"2008","symbol":"USO","median":0.121247588819334},{"strategy":"C.EW","date":"2008","symbol":"UUP","median":0.251498543243283},{"strategy":"C.EW","date":"2009","symbol":"EEM","median":0.0377335202332059},{"strategy":"C.EW","date":"2009","symbol":"EFA","median":0.0367749016765224},{"strategy":"C.EW","date":"2009","symbol":"GLD","median":0.24690358214781},{"strategy":"C.EW","date":"2009","symbol":"IWM","median":0.0370628614359441},{"strategy":"C.EW","date":"2009","symbol":"IYR","median":0.037256408011199},{"strategy":"C.EW","date":"2009","symbol":"QQQ","median":0.0369596847479354},{"strategy":"C.EW","date":"2009","symbol":"SPY","median":0.0367664655902278},{"strategy":"C.EW","date":"2009","symbol":"TLT","median":0.244350087940035},{"strategy":"C.EW","date":"2009","symbol":"USO","median":0.0371277386327393},{"strategy":"C.EW","date":"2009","symbol":"UUP","median":0.248673585692028},{"strategy":"C.EW","date":"2010","symbol":"EEM","median":0.0377390522298042},{"strategy":"C.EW","date":"2010","symbol":"EFA","median":0.0382901742221428},{"strategy":"C.EW","date":"2010","symbol":"GLD","median":0.248640685460571},{"strategy":"C.EW","date":"2010","symbol":"IWM","median":0.0385996984320563},{"strategy":"C.EW","date":"2010","symbol":"IYR","median":0.0377578355556659},{"strategy":"C.EW","date":"2010","symbol":"QQQ","median":0.0380705524373005},{"strategy":"C.EW","date":"2010","symbol":"SPY","median":0.0379544715641154},{"strategy":"C.EW","date":"2010","symbol":"TLT","median":0.246093722267028},{"strategy":"C.EW","date":"2010","symbol":"USO","median":0.0378401360879078},{"strategy":"C.EW","date":"2010","symbol":"UUP","median":0.247557267548019},{"strategy":"C.EW","date":"2011","symbol":"EEM","median":0.0360039427761251},{"strategy":"C.EW","date":"2011","symbol":"EFA","median":0.0359782910813783},{"strategy":"C.EW","date":"2011","symbol":"GLD","median":0.253384162440604},{"strategy":"C.EW","date":"2011","symbol":"IWM","median":0.0359836498586558},{"strategy":"C.EW","date":"2011","symbol":"IYR","median":0.0357849250630471},{"strategy":"C.EW","date":"2011","symbol":"QQQ","median":0.0360088569952919},{"strategy":"C.EW","date":"2011","symbol":"SPY","median":0.0357945431883956},{"strategy":"C.EW","date":"2011","symbol":"TLT","median":0.248413900343757},{"strategy":"C.EW","date":"2011","symbol":"USO","median":0.0358983709851009},{"strategy":"C.EW","date":"2011","symbol":"UUP","median":0.24877121887304},{"strategy":"C.EW","date":"2012","symbol":"EEM","median":0.0476451939775697},{"strategy":"C.EW","date":"2012","symbol":"EFA","median":0.0477994687911765},{"strategy":"C.EW","date":"2012","symbol":"GLD","median":0.332678639313274},{"strategy":"C.EW","date":"2012","symbol":"IWM","median":0.0476190476190476},{"strategy":"C.EW","date":"2012","symbol":"IYR","median":0.0476225169766299},{"strategy":"C.EW","date":"2012","symbol":"QQQ","median":0.0476190476190476},{"strategy":"C.EW","date":"2012","symbol":"SPY","median":0.047705816325834},{"strategy":"C.EW","date":"2012","symbol":"TLT","median":0.166264024114372},{"strategy":"C.EW","date":"2012","symbol":"USO","median":0.047519991772768},{"strategy":"C.EW","date":"2012","symbol":"UUP","median":0.166715101786156},{"strategy":"C.EW","date":"2013","symbol":"EEM","median":0.0356569430754227},{"strategy":"C.EW","date":"2013","symbol":"EFA","median":0.0362028360042069},{"strategy":"C.EW","date":"2013","symbol":"GLD","median":0.249585046007966},{"strategy":"C.EW","date":"2013","symbol":"IWM","median":0.0363924894850018},{"strategy":"C.EW","date":"2013","symbol":"IYR","median":0.0359851024940822},{"strategy":"C.EW","date":"2013","symbol":"QQQ","median":0.0363382846627412},{"strategy":"C.EW","date":"2013","symbol":"SPY","median":0.0364040830587461},{"strategy":"C.EW","date":"2013","symbol":"TLT","median":0.246633028523731},{"strategy":"C.EW","date":"2013","symbol":"USO","median":0.0362914700196431},{"strategy":"C.EW","date":"2013","symbol":"UUP","median":0.250384790089287},{"strategy":"C.RP","date":"2008","symbol":"EEM","median":0.0174808642154638},{"strategy":"C.RP","date":"2008","symbol":"EFA","median":0.0298127110415358},{"strategy":"C.RP","date":"2008","symbol":"GLD","median":0.0981974732965371},{"strategy":"C.RP","date":"2008","symbol":"IWM","median":0.0262634146855304},{"strategy":"C.RP","date":"2008","symbol":"IYR","median":0.0195718653588026},{"strategy":"C.RP","date":"2008","symbol":"QQQ","median":0.0278615538262695},{"strategy":"C.RP","date":"2008","symbol":"SPY","median":0.0334271200518572},{"strategy":"C.RP","date":"2008","symbol":"TLT","median":0.295319804700387},{"strategy":"C.RP","date":"2008","symbol":"USO","median":0.0624679169443451},{"strategy":"C.RP","date":"2008","symbol":"UUP","median":0.39328766466902},{"strategy":"C.RP","date":"2009","symbol":"EEM","median":0.0136189452353769},{"strategy":"C.RP","date":"2009","symbol":"EFA","median":0.0190969492841487},{"strategy":"C.RP","date":"2009","symbol":"GLD","median":0.183119863397186},{"strategy":"C.RP","date":"2009","symbol":"IWM","median":0.0192936872735304},{"strategy":"C.RP","date":"2009","symbol":"IYR","median":0.0115207294687494},{"strategy":"C.RP","date":"2009","symbol":"QQQ","median":0.0237810733495913},{"strategy":"C.RP","date":"2009","symbol":"SPY","median":0.0218068459250448},{"strategy":"C.RP","date":"2009","symbol":"TLT","median":0.284372028589455},{"strategy":"C.RP","date":"2009","symbol":"USO","median":0.0161202905324287},{"strategy":"C.RP","date":"2009","symbol":"UUP","median":0.410322012606497},{"strategy":"C.RP","date":"2010","symbol":"EEM","median":0.0227733325942156},{"strategy":"C.RP","date":"2010","symbol":"EFA","median":0.0248714667095147},{"strategy":"C.RP","date":"2010","symbol":"GLD","median":0.205354732515317},{"strategy":"C.RP","date":"2010","symbol":"IWM","median":0.0242123800825765},{"strategy":"C.RP","date":"2010","symbol":"IYR","median":0.0216925383837301},{"strategy":"C.RP","date":"2010","symbol":"QQQ","median":0.0311258688581249},{"strategy":"C.RP","date":"2010","symbol":"SPY","median":0.0328423105286394},{"strategy":"C.RP","date":"2010","symbol":"TLT","median":0.244105058691626},{"strategy":"C.RP","date":"2010","symbol":"USO","median":0.0209885961786726},{"strategy":"C.RP","date":"2010","symbol":"UUP","median":0.386550878307058},{"strategy":"C.RP","date":"2011","symbol":"EEM","median":0.024155061907099},{"strategy":"C.RP","date":"2011","symbol":"EFA","median":0.0247235582596227},{"strategy":"C.RP","date":"2011","symbol":"GLD","median":0.226562477839687},{"strategy":"C.RP","date":"2011","symbol":"IWM","median":0.0238817311814255},{"strategy":"C.RP","date":"2011","symbol":"IYR","median":0.0264878404070283},{"strategy":"C.RP","date":"2011","symbol":"QQQ","median":0.0311584174683695},{"strategy":"C.RP","date":"2011","symbol":"SPY","median":0.0346116618217524},{"strategy":"C.RP","date":"2011","symbol":"TLT","median":0.214543307018649},{"strategy":"C.RP","date":"2011","symbol":"USO","median":0.0198350320102255},{"strategy":"C.RP","date":"2011","symbol":"UUP","median":0.380141976127233},{"strategy":"C.RP","date":"2012","symbol":"EEM","median":0.0271346587466941},{"strategy":"C.RP","date":"2012","symbol":"EFA","median":0.0295673735586218},{"strategy":"C.RP","date":"2012","symbol":"GLD","median":0.262302009840171},{"strategy":"C.RP","date":"2012","symbol":"IWM","median":0.0280494376741688},{"strategy":"C.RP","date":"2012","symbol":"IYR","median":0.0319427394639126},{"strategy":"C.RP","date":"2012","symbol":"QQQ","median":0.0380577738095488},{"strategy":"C.RP","date":"2012","symbol":"SPY","median":0.0387387538287328},{"strategy":"C.RP","date":"2012","symbol":"TLT","median":0.156794780755333},{"strategy":"C.RP","date":"2012","symbol":"USO","median":0.0278648940362846},{"strategy":"C.RP","date":"2012","symbol":"UUP","median":0.35593370425744},{"strategy":"C.RP","date":"2013","symbol":"EEM","median":0.0249183303955102},{"strategy":"C.RP","date":"2013","symbol":"EFA","median":0.0270357488766253},{"strategy":"C.RP","date":"2013","symbol":"GLD","median":0.161144126140091},{"strategy":"C.RP","date":"2013","symbol":"IWM","median":0.0288590980351415},{"strategy":"C.RP","date":"2013","symbol":"IYR","median":0.0365317900504381},{"strategy":"C.RP","date":"2013","symbol":"QQQ","median":0.0302686356718151},{"strategy":"C.RP","date":"2013","symbol":"SPY","median":0.0359493610058534},{"strategy":"C.RP","date":"2013","symbol":"TLT","median":0.199114182636309},{"strategy":"C.RP","date":"2013","symbol":"USO","median":0.0183682873046701},{"strategy":"C.RP","date":"2013","symbol":"UUP","median":0.424107167483851}]
+        
+    var data = d3.nest()
+        .key(function(d){ return d[opts.facet]} ).sortKeys(d3.ascending)   
+        .entries(data)
+        
+      facets = d3.select("#" + opts.id)
+        .selectAll("div")
+        .data(data).enter()
+        .append('div').attr('class', 'facets')
+        .append('svg')
+          .attr("height", opts.height/d3.keys(data).length);
+          
+      facets[0].forEach(function(d,i){
+        d3.select(d3.select(d).node().parentNode).insert("h3","svg")
+          .text(opts.facet + " : " + d3.select(d).datum().key)
+      })
+    
+      facets.each(function(d, i){
+         var facetdata = d3.nest()
+          .key(function(d){
+            return opts.group === undefined ? d[opts.facet] : d[opts.group]
+          })
+          .key(function(d){
+            return d[opts.x]
+          })          
+          .rollup(function(d){
+              tempobj = {};
+              tempobj[opts.x] = d[0][opts.x];
+              tempobj[opts.y] = d3.sum(d, function(dd) {
+                return dd[opts.y];
+              });
+              return tempobj;
+          })          
+          .entries(d.values)
+      
+         nv.addGraph(function() {
+           var chart = nv.models[opts.type]()
+             .x(function(d) {
+               return d.values[opts.x] })
+             .y(function(d) { return d.values[opts.y] })
+             .width(opts.width)
+             .height(opts.height / facets[0].length)
+         
+        
+          
+        
+
+        
+        
+                   
+          
+        
+         if(opts.type==="pieChart" || opts.type==="sparklinePlus") {
+           facetdata = facetdata[0].values;
+         };
+      
+         d3.select(facets[0][i])
+          .datum(facetdata)
+          .transition().duration(500)
+          .call(chart);
+
+          nv.utils.windowResize(chart.update);
+        });
+      });
+    };
+</script>
+    
+  </body>
+</html>

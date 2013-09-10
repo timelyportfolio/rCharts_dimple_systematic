@@ -1,0 +1,84 @@
+<!doctype HTML>
+<meta charset = 'utf-8'>
+<html>
+  <head>
+    <link rel='stylesheet' href='../../libraries/widgets/nvd3/css/nv.d3.css'>
+    <link rel='stylesheet' href='../../libraries/widgets/nvd3/css/rNVD3.css'>
+    
+    <script src='../../libraries/widgets/nvd3/js/jquery-1.8.2.min.js' type='text/javascript'></script>
+    <script src='../../libraries/widgets/nvd3/js/d3.v3.min.js' type='text/javascript'></script>
+    <script src='../../libraries/widgets/nvd3/js/nv.d3.min-new.js' type='text/javascript'></script>
+    <script src='../../libraries/widgets/nvd3/js/fisheye.js' type='text/javascript'></script>
+    
+    <style>
+    .rChart {
+      display: block;
+      margin-left: auto; 
+      margin-right: auto;
+      width: 800px;
+      height: 400px;
+    }  
+    </style>
+    
+  </head>
+  <body>
+    <div id='chart157064fa531f' class='rChart nvd3'></div>  
+    
+    <script type='text/javascript'>
+ $(document).ready(function(){
+      drawchart157064fa531f()
+    });
+    function drawchart157064fa531f(){  
+      var opts = {
+ "dom": "chart157064fa531f",
+"width":    800,
+"height":    400,
+"x": "date",
+"y": "mean",
+"group": "symbol",
+"type": "stackedAreaChart",
+"id": "chart157064fa531f" 
+},
+        data = [{"date":"2008","symbol":"EEM","mean":0.039897160385869},{"date":"2008","symbol":"EFA","mean":0.0405174142671524},{"date":"2008","symbol":"GLD","mean":0.125212040079999},{"date":"2008","symbol":"IWM","mean":0.0406280168137603},{"date":"2008","symbol":"IYR","mean":0.0404231065986832},{"date":"2008","symbol":"QQQ","mean":0.040994495189885},{"date":"2008","symbol":"SPY","mean":0.0407397875702848},{"date":"2008","symbol":"TLT","mean":0.257206982505137},{"date":"2008","symbol":"USO","mean":0.120266168300247},{"date":"2008","symbol":"UUP","mean":0.254114828288982},{"date":"2009","symbol":"EEM","mean":0.0389806793522916},{"date":"2009","symbol":"EFA","mean":0.038155597404874},{"date":"2009","symbol":"GLD","mean":0.210559926270815},{"date":"2009","symbol":"IWM","mean":0.0383272378347452},{"date":"2009","symbol":"IYR","mean":0.038228730276565},{"date":"2009","symbol":"QQQ","mean":0.0385422753508433},{"date":"2009","symbol":"SPY","mean":0.0382167855036769},{"date":"2009","symbol":"TLT","mean":0.245382827455201},{"date":"2009","symbol":"USO","mean":0.0644957060704538},{"date":"2009","symbol":"UUP","mean":0.249110234480534},{"date":"2010","symbol":"EEM","mean":0.0475882591390082},{"date":"2010","symbol":"EFA","mean":0.0475901377162762},{"date":"2010","symbol":"GLD","mean":0.172414722905675},{"date":"2010","symbol":"IWM","mean":0.0475685096732348},{"date":"2010","symbol":"IYR","mean":0.0475164835674432},{"date":"2010","symbol":"QQQ","mean":0.0476059594287343},{"date":"2010","symbol":"SPY","mean":0.0475064206711144},{"date":"2010","symbol":"TLT","mean":0.247308377962691},{"date":"2010","symbol":"USO","mean":0.0466973323626967},{"date":"2010","symbol":"UUP","mean":0.248203796573127},{"date":"2011","symbol":"EEM","mean":0.0406012345958659},{"date":"2011","symbol":"EFA","mean":0.0405962344785673},{"date":"2011","symbol":"GLD","mean":0.254753806015512},{"date":"2011","symbol":"IWM","mean":0.0392456389330601},{"date":"2011","symbol":"IYR","mean":0.0392829945644928},{"date":"2011","symbol":"QQQ","mean":0.0397202594178838},{"date":"2011","symbol":"SPY","mean":0.0395550244464649},{"date":"2011","symbol":"TLT","mean":0.228113198442722},{"date":"2011","symbol":"USO","mean":0.0411636004217185},{"date":"2011","symbol":"UUP","mean":0.236968008683712},{"date":"2012","symbol":"EEM","mean":0.0469119884796859},{"date":"2012","symbol":"EFA","mean":0.046883452180634},{"date":"2012","symbol":"GLD","mean":0.326718279725026},{"date":"2012","symbol":"IWM","mean":0.0468723469230313},{"date":"2012","symbol":"IYR","mean":0.0467887006414558},{"date":"2012","symbol":"QQQ","mean":0.0468971039757115},{"date":"2012","symbol":"SPY","mean":0.0468767180273594},{"date":"2012","symbol":"TLT","mean":0.172241994770781},{"date":"2012","symbol":"USO","mean":0.0464418350610098},{"date":"2012","symbol":"UUP","mean":0.173367580215305},{"date":"2013","symbol":"EEM","mean":0.0355127491769545},{"date":"2013","symbol":"EFA","mean":0.0362196248230755},{"date":"2013","symbol":"GLD","mean":0.247972300486077},{"date":"2013","symbol":"IWM","mean":0.0364306034692063},{"date":"2013","symbol":"IYR","mean":0.0359848512305312},{"date":"2013","symbol":"QQQ","mean":0.036342782093908},{"date":"2013","symbol":"SPY","mean":0.0363538574911938},{"date":"2013","symbol":"TLT","mean":0.247926005405007},{"date":"2013","symbol":"USO","mean":0.0363261723611467},{"date":"2013","symbol":"UUP","mean":0.2509310534629}]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .x(function(d) { return d[opts.x] })
+          .y(function(d) { return d[opts.y] })
+          .width(opts.width)
+          .height(opts.height)
+         
+        chart
+  .useInteractiveGuideline(true)
+          
+        
+
+        
+        
+        chart.yAxis
+  .tickFormat(function(d) { return d3.format('.2%')(d) })
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
+</script>
+    
+  </body>
+</html>
