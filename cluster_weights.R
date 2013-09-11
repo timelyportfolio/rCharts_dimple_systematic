@@ -107,12 +107,14 @@ dFacet <- dPlot(
 dFacet$xAxis( orderRule = "symbol" )
 dFacet$yAxis( overrideMax = 0.4, outputFormat = ".2f" )
 dFacet$facet( x = "strategy", y = "date" )
+dFacet$setLib( "libraries/widgets/dimple" )
 dFacet$templates$script = system.file(
   "libraries/dimple/layouts/chartFacet_d3grid.html",
   #"libraries/dimple/layouts/chartFacet.html",
   package = "rCharts"
 )
 dFacet
+dFacet$save("dimple_facet.html",cdn=F)
 
 dStory <- dPlot(
   y = "median",
