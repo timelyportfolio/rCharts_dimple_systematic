@@ -83,10 +83,16 @@ dEq$xAxis(
   type = "addTimeAxis",
   inputFormat = "%Y-%m-%d", outputFormat = "%b %Y"
 )
-dEq$defaultColors(theEconomist.theme()$regions$col, replace=T)
+dEq$defaultColors(theEconomist.theme()$superpose.line$col, replace=T)
 dEq
-
-
+dEq$defaultColors(brewer.pal(n=9,"Blues"), replace=T)
+dEq
+dEq$defaultColors("#!d3.scale.category20b()!#", replace=T)
+dEq
+dEq$defaultColors("#!d3.scale.category20b()!#", replace=T)
+dEq
+dEq$defaultColors("#!d3.scale.category10()!#", replace=T)
+dEq
 
 
 #I don't think daily is necessary, so let's try some aggregation
