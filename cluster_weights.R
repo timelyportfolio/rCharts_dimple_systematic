@@ -15,8 +15,8 @@ close(con)
 #****************************************************************** 
 load.packages('quantmod')
 
-tickers = spl('GLD,UUP,SPY,QQQ,IWM,EEM,EFA,IYR,USO,TLT')
-
+#tickers = spl('GLD,UUP,SPY,QQQ,IWM,EEM,EFA,IYR,USO,TLT')
+#to reduce calls to Yahoo I saved the data in .Rdata
 data <- new.env()
 load("data.Rdata",envir=data)
 #getSymbols(tickers, src = 'yahoo', from = '1900-01-01', env = data, auto.assign = T)
