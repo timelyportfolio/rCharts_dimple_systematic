@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>rCharts + dimple | Systematic Investor Methods</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/png" href="favicon.ico">
+  <style>
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+  </style>
+  
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-responsive.no-icons.min.css" rel="stylesheet">
+<!-- <link rel="stylesheet" href="/css/bootstrap.min.css"> -->
+<link  rel="stylesheet" 
+    href="http://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css">
+  <link rel="stylesheet" href="libraries/frameworks/bootstrap/css/bootstrap-responsive.min.css">
+  
+  <link rel="stylesheet" href="libraries/frameworks/bootstrap/css/main.css">
+  <link rel="stylesheet" href="libraries/highlighters/prettify/css/twitter-bootstrap.css" />
+  <script src="libraries/frameworks/bootstrap/js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/frameworks/bootstrap/js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+    <link rel=stylesheet href="http://fonts.googleapis.com/css?family=Raleway:300"></link>
+<link rel=stylesheet href="http://fonts.googleapis.com/css?family=Oxygen"></link>
+
+  
+</head>
+<body>
+   <!--[if lt IE 7]>
+     <p class="chromeframe">You are using an outdated browser. 
+       <a href="http://browsehappy.com/">Upgrade your browser today</a> or 
+       <a href="http://www.google.com/chromeframe/?redirect=true"> 
+         install Google Chrome Frame
+       </a> to better experience this site.
+    </p>
+   <![endif]-->
+   <!-- Ref: http://twitter.github.com/bootstrap/examples/hero.html -->
+   
+    <div class="container">
+      
+<style>
+iframe{
+  height:500px;
+  width:900px;
+  margin:auto auto;
+}
+
+body{
+  font-family: 'Oxygen', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+h1,h2,h3,h4 {
+font-family: 'Raleway', sans-serif;
+}
+
+.container { width: 900px; }
+
+h3 {
+background-color: #D4DAEC;
+  text-indent: 100px; 
+}
+
+h4 {
+text-indent: 100px;
+}
+</style>
+  
+
+<p><a href="https://github.com/timelyportfolio/rCharts_nvd3_perf"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a></p>
+
+<h1>Interactive Analysis of Systematic Investor - <code>PerformanceAnalytics</code> Tables</h1>
+
+<p>In a <a href="http://timelyportfolio.blogspot.com/2013/09/d3-ify-systematic-investor-cluster.html">previous post</a>, I thought it would be good fun to take one of the <a href="http://systematicinvestor.wordpress.com/2013/03/05/cluster-risk-parity-back-test/">posts from Systematic Investor</a> and d3-ify it.  Let&#39;s have a look at returns now using the mutliple tables provided by <code>PerformanceAnalytics</code>.  I will just use the defaults on each of these tables and then plot the table with a <a href="http://dimplejs.org"><code>dimplejs</code></a> bar chart.</p>
+
+<h3>Copy/Paste Systematic Investor Brilliance</h3>
+
+<p>As before, let&#39;s start by getting the data and performing the calculations in R.  This is a direct copy and paste from the Systematic Investor post.  Thanks again Systematic Investor.</p>
+
+<pre><code class="r">#thanks Systematic Investor, Michael Kapler
+#for this post http://systematicinvestor.wordpress.com/2013/03/05/cluster-risk-parity-back-test/
+
+###############################################################################
+# Load Systematic Investor Toolbox (SIT)
+# http://systematicinvestor.wordpress.com/systematic-investor-toolbox/
+###############################################################################
+setInternet2(TRUE)
+con = gzcon(url(&#39;http://www.systematicportfolio.com/sit.gz&#39;, &#39;rb&#39;))
+source(con)
+close(con)
+
+#*****************************************************************
+# Load historical data for ETFs
+#****************************************************************** 
+load.packages(&#39;quantmod&#39;)
+
+#tickers = spl(&#39;GLD,UUP,SPY,QQQ,IWM,EEM,EFA,IYR,USO,TLT&#39;)
+#to reduce calls to Yahoo I saved the data in .Rdata
+data &lt;- new.env()
+load(url(&quot;http://timelyportfolio.github.io/rCharts_dimple_systematic/data.Rdata&quot;),envir=data)
+#getSymbols(tickers, src = &#39;yahoo&#39;, from = &#39;1900-01-01&#39;, env = data, auto.assign = T)
+#for(i in ls(data)) data[[i]] = adjustOHLC(data[[i]], use.Adjusted=T)
+
+bt.prep(data, align=&#39;remove.na&#39;)
+
+#*****************************************************************
+# Code Strategies
+#******************************************************************   
+periodicity = &#39;months&#39;
+lookback.len = 250
+cluster.group = cluster.group.kmeans.90
+
+obj = portfolio.allocation.helper(
+  data$prices, 
+  periodicity = periodicity, lookback.len = lookback.len,
+  min.risk.fns = list(
+    EW=equal.weight.portfolio,
+    RP=risk.parity.portfolio,
+    C.EW = distribute.weights(equal.weight.portfolio, cluster.group),
+    C.RP=distribute.weights(risk.parity.portfolio, cluster.group)
+  )
+)       
+models = create.strategies(obj, data)$models
+</code></pre>
+
+
+<h3><code>PerformanceAnalytics</code>, Please Make All Your Tables</h3>
+<pre><code class="r">#use rCharts to get some interactive plots
+require(rCharts)
+require(reshape2)
+
+#Performance Analytics wants the return series so let&#39;s merge returns into
+#a single xts object
+returns.xts &lt;- do.call(merge,
+  lapply(
+   names(models),
+   FUN=function(x){
+     x.data &lt;- models[[x]]$equity[endpoints(models[[x]]$equity,&quot;months&quot;),]
+     colnames(x.data) &lt;- x
+     x.ret &lt;- ROC( x.data, type = &quot;discrete&quot;, n = 1 )
+     return(x.ret)
+   }
+  )
+)[-(1:11),]  #remove first 11 months since no data; will need to change if not monthly
+
+perfTables &lt;- list()
+perfTables$AnnualizedReturns &lt;- table.AnnualizedReturns(returns.xts)
+perfTables$Autocorrelation &lt;- table.Autocorrelation(returns.xts)
+perfTables$CAPM &lt;- table.CAPM(returns.xts[,-1],returns.xts[,1])
+perfTables$CalendarReturns &lt;- table.CalendarReturns(returns.xts)[,-(1:12)]/100 #ignore monthly data
+perfTables$CaptureRatios &lt;- t(table.CaptureRatios(returns.xts,returns.xts[,1]))
+perfTables$Correlation &lt;- t(table.Correlation(returns.xts,returns.xts[,1]))
+perfTables$Distributions &lt;- table.Distributions(returns.xts)
+perfTables$DownsideRisk &lt;- table.DownsideRisk(returns.xts)[-7,] #remove drawdown
+perfTables$DownsideRiskRatio &lt;- table.DownsideRiskRatio(returns.xts)
+perfTables$DrawdownsRatio &lt;- table.DrawdownsRatio(returns.xts)
+perfTables$HigherMoments &lt;- table.HigherMoments(returns.xts[,-1],returns.xts[,1])
+perfTables$InformationRatio &lt;- table.InformationRatio(returns.xts[,-1],returns.xts[,1])
+perfTables$SpecificRisk &lt;- table.SpecificRisk(returns.xts[,-1],returns.xts[,1])
+perfTables$TrailingPeriods &lt;- table.TrailingPeriods(returns.xts)
+perfTables$Variability &lt;- table.Variability( returns.xts )
+</code></pre>
+
+<h3><code>rCharts</code>, Please Make Us Lots of Bar Charts</h3>
+
+<pre><code class="r">require(RColorBrewer)
+lapply(
+  perfTables, #[&quot;InformationRatio&quot;],
+  FUN = function(x) {
+    x.df &lt;- data.frame( rownames(x),x )
+    x.melt &lt;- melt( x.df, id.vars = 1 )
+    colnames( x.melt ) &lt;- c( &quot;metric&quot;, &quot;strategy&quot;, &quot;value&quot;)
+
+    d1 &lt;- dPlot(
+      x = &quot;value&quot;,
+      y = c(&quot;metric&quot;,&quot;strategy&quot;),
+      groups = c(&quot;strategy&quot;),
+      data = x.melt,
+      type = &quot;bar&quot;,
+      width = 800
+    )
+    d1$chart( x = 150, width = 550 )  #move over a little to allow room for y axis labels
+    d1$yAxis( type = &quot;addCategoryAxis&quot;, orderRule = rev(x.melt$metric) )
+    d1$xAxis( type = &quot;addMeasureAxis&quot;, outputFormat = &quot;.2%&quot;  )
+    d1$legend(
+      x = 725,
+      y = 10,
+      width = 75,
+      height = 100,
+      horizontalAlign = &quot;left&quot;
+    )
+    d1$defaultColors(
+      latticeExtra::theEconomist.theme()$superpose.line$col,
+      replace=T
+    )
+    d1$show(&quot;iframe&quot;)
+  }
+)
+</code></pre>
+
+<h3>tables.AnnualizedReturns</h3>
+<iframe src=assets/fig/unnamed-chunk-1.html seamless></iframe>
+<h3>tables.Autocorrelation</h3>
+<iframe src=assets/fig/unnamed-chunk-2.html seamless></iframe>
+<h3>tables.CAPM</h3>
+<iframe src=assets/fig/unnamed-chunk-3.html seamless></iframe>
+<h3>tables.CalendarReturns</h3>
+<iframe src=assets/fig/unnamed-chunk-4.html seamless></iframe>
+<h3>tables.CaptureRatios</h3>
+<iframe src=assets/fig/unnamed-chunk-5.html seamless></iframe>
+<h3>tables.Correlation</h3>
+<iframe src=assets/fig/unnamed-chunk-6.html seamless></iframe>
+<h3>tables.Distributions</h3>
+<iframe src=assets/fig/unnamed-chunk-7.html seamless></iframe>
+<h3>tables.DownsideRisk</h3>
+<iframe src=assets/fig/unnamed-chunk-8.html seamless></iframe>
+<h3>tables.DownsideRiskRatio</h3>
+<iframe src=assets/fig/unnamed-chunk-9.html seamless></iframe>
+<h3>tables.DrawdownsRatio</h3>
+<iframe src=assets/fig/unnamed-chunk-10.html seamless></iframe>
+<h3>tables.HigherMoments</h3>
+<iframe src=assets/fig/unnamed-chunk-11.html seamless></iframe>
+<h3>tables.InformationRatio</h3>
+<iframe src=assets/fig/unnamed-chunk-12.html seamless></iframe>
+<h3>tables.SpecificRisk</h3>
+<iframe src=assets/fig/unnamed-chunk-13.html seamless></iframe>
+<h3>tables.TrailingPeriods</h3>
+<iframe src=assets/fig/unnamed-chunk-14.html seamless></iframe>
+<h3>tables.Variability</h3>
+<iframe src=assets/fig/unnamed-chunk-15.html seamless></iframe>
+<p>For an explanation of some of these risk and return measures, a good resource is  <br/>   <iframe src="http://rcm-na.amazon-adsystem.com/e/cm?lt1=_blank&bc1=000000&IS2=1&bg1=FFFFFF&fc1=000000&lc1=0000FF&t=timelyp-20&o=1&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins=1118369742" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+</p>
+
+    </div>
+
+</body>
+  <script src="libraries/frameworks/bootstrap/js/vendor/bootstrap.min.js"></script>
+  <script src="libraries/frameworks/bootstrap/js/plugins.js"></script>
+  <script src="libraries/frameworks/bootstrap/js/main.js"></script>
+  <!-- Load Javascripts for Widgets -->
+  <script src="./assets/js/d3-grid.js"></script>
+<script src="./assets/js/d3.v3.js"></script>
+
+  <!-- Google Prettify -->
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+  <script src='libraries/highlighters/prettify/js/lang-r.js'></script>
+  <script>
+    var pres = document.getElementsByTagName("pre");
+    for (var i=0; i < pres.length; ++i) {
+      pres[i].className = "prettyprint linenums";
+    }
+    prettyPrint();
+  </script>
+  <!-- End Google Prettify --> 
+  </html>
+  

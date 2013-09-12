@@ -1,3 +1,65 @@
+---
+title: rCharts + dimple | Systematic Investor Methods
+author: Timely Portfolio
+github: {user: timelyportfolio, repo: rCharts_dimple_systematic, branch: "gh-pages"}
+framework: bootstrap
+mode: selfcontained
+highlighter: prettify
+hitheme: twitter-bootstrap
+assets:
+  css:
+  - "http://fonts.googleapis.com/css?family=Raleway:300"
+  - "http://fonts.googleapis.com/css?family=Oxygen"
+---
+
+<style>
+iframe{
+  height:600px;
+  width:900px;
+  margin:auto auto;
+}
+
+body{
+  font-family: 'Oxygen', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+h1,h2,h3,h4 {
+font-family: 'Raleway', sans-serif;
+}
+
+.container { width: 900px; }
+
+h3 {
+background-color: #D4DAEC;
+  text-indent: 100px; 
+}
+
+h4 {
+text-indent: 100px;
+}
+</style>
+  
+<a href="https://github.com/timelyportfolio/rCharts_nvd3_perf"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+# Interactive Analysis of Systematic Investor - `PerformanceAnalytics` Tables
+
+In a [previous post](http://timelyportfolio.blogspot.com/2013/09/d3-ify-systematic-investor-cluster.html), I thought it would be good fun to take one of the [posts from Systematic Investor](http://systematicinvestor.wordpress.com/2013/03/05/cluster-risk-parity-back-test/) and d3-ify it.  Let's have a look at returns now using the mutliple tables provided by `PerformanceAnalytics`.  I will just use the defaults on each of these tables and then plot the table with a [`dimplejs`](http://dimplejs.org) bar chart.
+
+### Copy/Paste Systematic Investor Brilliance
+As before, let's start by getting the data and performing the calculations in R.  This is a direct copy and paste from the Systematic Investor post.  Thanks again Systematic Investor.
+
+
+```{r echo = F, message = F, warning = F, error = F, cache = F}
+require(knitr)
+opts_chunk$set(results='asis', message = F, warning = F, error = T, cache = F, tidy = F, rcharts="draft")
+data = new.env()
+load("data.Rda", envir = data)
+```
+
+### Get Data and Perform Calculations
+```{r}
 #thanks Systematic Investor, Michael Kapler
 #for this post http://systematicinvestor.wordpress.com/2013/03/05/cluster-risk-parity-back-test/
 
@@ -18,7 +80,7 @@ load.packages('quantmod')
 #tickers = spl('GLD,UUP,SPY,QQQ,IWM,EEM,EFA,IYR,USO,TLT')
 #to reduce calls to Yahoo I saved the data in .Rdata
 data <- new.env()
-load("data.Rdata",envir=data)
+load(url("http://timelyportfolio.github.io/rCharts_dimple_systematic/data.Rdata"),envir=data)
 #getSymbols(tickers, src = 'yahoo', from = '1900-01-01', env = data, auto.assign = T)
 #for(i in ls(data)) data[[i]] = adjustOHLC(data[[i]], use.Adjusted=T)
 
@@ -43,86 +105,13 @@ obj = portfolio.allocation.helper(
 ) 		
 
 models = create.strategies(obj, data)$models
+```
 
-#*****************************************************************
-# Create Report
-#****************************************************************** 	
-#strategy.performance.snapshoot(models, T)
-
+```{r}
 #use rCharts to get some interactive plots
 require(rCharts)
 require(reshape2)
 
-equity.df <- data.frame(index(models$C.EW$equity),models$C.EW$equity)[-(1:254),]
-colnames(equity.df) <- c("date","C.EW")
-
-
-#get cumulative growth from each of the models in long form                         
-equity.melt <- do.call(rbind,
-  lapply(
-    names(models),
-    FUN=function(x){
-      x.data <- models[[x]]$equity[endpoints(models[[x]]$equity,"months"),]
-      colnames(x.data) <- x      
-      x.melt <- melt(data.frame(index(x.data),x.data),id.vars=1)
-      colnames(x.melt) <- c("date", "model", "equity")
-      #get date in text format that dimple will like
-      x.melt$date <- format(x.melt$date, "%Y-%m-%d")
-      return(x.melt)
-    }
-  )
-)
-
-dEq <- dPlot(
-  equity ~ date,
-  groups = "model",
-  data = equity.melt,
-  type = "line"
-)
-dEq$xAxis(
-  type = "addTimeAxis",
-  inputFormat = "%Y-%m-%d", outputFormat = "%b %Y"
-)
-require(latticeExtra)
-dEq$defaultColors(theEconomist.theme()$superpose.line$col, replace=T)
-dEq
-dEq$defaultColors(brewer.pal(n=9,"Blues"), replace=T)
-dEq
-dEq$defaultColors("#!d3.scale.category20()!#", replace=T)
-dEq
-dEq$defaultColors("#!d3.scale.category20b()!#", replace=T)
-dEq
-dEq$defaultColors("#!d3.scale.category20c()!#", replace=T)
-dEq
-dEq$defaultColors("#!d3.scale.category10()!#", replace=T)
-dEq
-
-#get year so we can test a facet by year
-equity.melt$year <- format(as.Date(equity.melt$date),"%Y")
-dEq_facet = dPlot(
-  equity ~ date,
-  groups = "model",
-  data = equity.melt,
-  type = "line",
-  height = 400,
-  width = 1000
-)
-dEq_facet$xAxis(
-  type = "addTimeAxis",
-  inputFormat = "%Y-%m-%d", outputFormat = "%b"
-)
-dEq_facet$yAxis( 
-  #overrideMin = min(equity.melt$equity) - 0.1,  #min messes up x axis label
-  overrideMax = max(equity.melt$equity)
-)
-dEq_facet$facet( x = "year" )
-dEq_facet$defaultColors(theEconomist.theme()$superpose.line$col, replace=T)
-dEq_facet$setLib( "libraries/widgets/dimple" )
-dEq_facet$templates$script = paste0(getwd(),"/libraries/widgets/dimple/layouts/chartFacet_d3grid.html") 
-dEq_facet
-
-#I don't think daily is necessary, so let's try some aggregation
-#this time though let's use PerformanceAnalytics to explore risk and return
 #Performance Analytics wants the return series so let's merge returns into
 #a single xts object
 returns.xts <- do.call(merge,
@@ -147,10 +136,18 @@ perfTables$Correlation <- t(table.Correlation(returns.xts,returns.xts[,1]))
 perfTables$Distributions <- table.Distributions(returns.xts)
 perfTables$DownsideRisk <- table.DownsideRisk(returns.xts)[-7,] #remove drawdown
 perfTables$DownsideRiskRatio <- table.DownsideRiskRatio(returns.xts)
+perfTables$DrawdownsRatio <- table.DrawdownsRatio(returns.xts)
+perfTables$HigherMoments <- table.HigherMoments(returns.xts[,-1],returns.xts[,1])
+perfTables$InformationRatio <- table.InformationRatio(returns.xts[,-1],returns.xts[,1])
+perfTables$SpecificRisk <- table.SpecificRisk(returns.xts[,-1],returns.xts[,1])
+perfTables$TrailingPeriods <- table.TrailingPeriods(returns.xts)
+perfTables$Variability <- table.Variability( returns.xts )
+```
 
+```{r}
 require(RColorBrewer)
 lapply(
-  perfTables,
+  perfTables, #["InformationRatio"],
   FUN = function(x) {
     x.df <- data.frame( rownames(x),x )
     x.melt <- melt( x.df, id.vars = 1 )
@@ -178,6 +175,7 @@ lapply(
       latticeExtra::theEconomist.theme()$superpose.line$col,
       replace=T
     )
-  return (d1)
+  return(d1)
   }
 )
+```
