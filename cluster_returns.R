@@ -54,7 +54,7 @@ require(rCharts)
 require(reshape2)
 
 equity.df <- data.frame(index(models$C.EW$equity),models$C.EW$equity)[-(1:254),]
-colnames(equity.df) <- c("date",
+colnames(equity.df) <- c("date","C.EW")
 
 
 #get cumulative growth from each of the models in long form                         
@@ -62,7 +62,7 @@ equity.melt <- do.call(rbind,
   lapply(
     names(models),
     FUN=function(x){
-      x.data <- to.weekly(models[[x]]$equity)[,4]
+      x.data <- models[[x]]$equity[endpoints(models[[x]]$equity,"months"),]
       colnames(x.data) <- x      
       x.melt <- melt(data.frame(index(x.data),x.data),id.vars=1)
       colnames(x.melt) <- c("date", "model", "equity")
@@ -83,17 +83,40 @@ dEq$xAxis(
   type = "addTimeAxis",
   inputFormat = "%Y-%m-%d", outputFormat = "%b %Y"
 )
+require(latticeExtra)
 dEq$defaultColors(theEconomist.theme()$superpose.line$col, replace=T)
 dEq
 dEq$defaultColors(brewer.pal(n=9,"Blues"), replace=T)
 dEq
-dEq$defaultColors("#!d3.scale.category20b()!#", replace=T)
+dEq$defaultColors("#!d3.scale.category20()!#", replace=T)
 dEq
 dEq$defaultColors("#!d3.scale.category20b()!#", replace=T)
+dEq
+dEq$defaultColors("#!d3.scale.category20c()!#", replace=T)
 dEq
 dEq$defaultColors("#!d3.scale.category10()!#", replace=T)
 dEq
 
+#get year so we can test a facet by year
+equity.melt$year <- format(as.Date(equity.melt$date),"%Y")
+dEq_facet = dPlot(
+  equity ~ date,
+  groups = "model",
+  data = equity.melt,
+  type = "line",
+  height = 500,
+  width = 1000
+)
+dEq_facet$xAxis(
+  type = "addTimeAxis",
+  inputFormat = "%Y-%m-%d", outputFormat = "%b"
+)
+dEq_facet$yAxis( overrideMax = max(equity.melt$equity) )
+dEq_facet$facet( x = "year" )
+dEq_facet$defaultColors(theEconomist.theme()$superpose.line$col, replace=T)
+dEq_facet$setLib( "libraries/widgets/dimple" )
+dEq_facet$templates$script = paste0(getwd(),"/libraries/widgets/dimple/layouts/chartFacet_d3grid.html") 
+dEq_facet
 
 #I don't think daily is necessary, so let's try some aggregation
 require(plyr)
