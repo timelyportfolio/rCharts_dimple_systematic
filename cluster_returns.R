@@ -104,14 +104,17 @@ dEq_facet = dPlot(
   groups = "model",
   data = equity.melt,
   type = "line",
-  height = 500,
+  height = 400,
   width = 1000
 )
 dEq_facet$xAxis(
   type = "addTimeAxis",
   inputFormat = "%Y-%m-%d", outputFormat = "%b"
 )
-dEq_facet$yAxis( overrideMax = max(equity.melt$equity) )
+dEq_facet$yAxis( 
+  #overrideMin = min(equity.melt$equity) - 0.1,  #min messes up x axis label
+  overrideMax = max(equity.melt$equity)
+)
 dEq_facet$facet( x = "year" )
 dEq_facet$defaultColors(theEconomist.theme()$superpose.line$col, replace=T)
 dEq_facet$setLib( "libraries/widgets/dimple" )
